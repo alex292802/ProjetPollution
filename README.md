@@ -2,14 +2,19 @@
 
 La qualité de l'air que l'on respire dépend de nombreux paramètres, les émissions de polluants bien sûr, du relief naturel ou urbain, de la présence d'îlots de chaleur, mais également des conditions météorologiques. Ainsi le vent est un élément déterminant dans la dispersion des polluants atmosphériques. La pluie permet également de diminuer de manière significative les concentrations de polluants dans l'air ambiant. A l'inverse, les situations anticycloniques, avecdes masses d'air stagnantes, conduisent à des augmentationsdes concentrations de polluants. Par ailleurs, de récentesétudes ont aussi montré que les arbres, en jouant le rôled’intercepteur de particules, ont un impact direct sur la pollution (captation, puis transport par les pluies, captationet remise en suspension par le vent). On comprend donc queles changements de saison ont un impact direct sur la pollution, impact renforcé par les activités humaines qui varient elles aussi au cours des saisons (chauffage au bois, épandage, etc.).
 
-L’objectif est de mettre en évidence la corrélation entre la granulométrie de la pollution en particules fines et la naturede la pollution (analyse fonction des données disponibles au sein d’une même station de mesure / de différentes stations de mesures).
+Nous pouvons découper ce projet en 3 taches principales :
 
-Le projet a pour sous-objectifs :
-1. L’extraction des données 
-2. L’analyse des données : pollution de fond /événements ponctuels
-3. La visualisation temporelle multigraphiques des données (PM1, PM2.5, PM10, ozone, NO2, black carbon et notamment black carbon dans PM2.5, etc…
-4. La mise en place d’un algorithme permettant la détection automatique d’évènement ponctuel (par exemple épisode du Sable du Sahara) 
-5. La corrélation entre le type de pollution et les informations en termes de particules fines.
+Tout d’abord nous savons que le nombre de particules dans l'air évolue au cours de l’année et est sensiblement différente en été par rapport à l’hiver. Notre premier objectif était de mettre en évidence une bisaisonalité en séparant l’été de l’hiver notamment. Chaque journée est un individu, chaque particule est un des features. L’enjeu était d’obtenir 2 nuages de points avec éventuellement un continuum de point. Nous nous sommes ensuite demandé quelles étaient les features les plus pertinentes pour séparer l’hiver de l’été et si les résultats ne sont pas issues d’une donnée prépondérante. Enfin, nous avons [classification]
+
+Notre 2ème objectif était de construire un jeu de données propres à partir des données des 3 stations disponibles. Dans l’optique d’identifier des événements particuliers du type sable du Sahara, nous avons eu besoin de construire un jeu de donnée propre. En effet en se servant uniquement des données de Marseille Long Champs, nous avons rencontré plusieurs problèmes :
+    • Mesures d’événements locaux se déroulant uniquement dans la zone géographique de Marseille Long Champs
+    • Erreurs de mesure liés aux instruments
+    • Présence de nombreux NaN
+    • Présence de données qui nous intéressent pas (notamment les gazs)
+Nous avons commencé par calculer le coefficient de Pearson entre les différentes stations pour voir dans quelle mesure les données des stations étaient corrélés. Nous avons ensuite fusionné les données des 3 stations en prenant le minimum des 3 valeurs disponibles pour chaque features. La moyenne n’était pas une bonne idée car on ne pouvait pas remarquer les événements atypiques se déroulant sur une station. Nous avons également remarqué qu’il manquait des données sur des intervalles assez importants. Après avoir essayé de compléter ces trous de données de plusieurs manières (régression et différentes méthodes de fitting…), nous avons tracé la droite reliant les 2 points de chaque coté du trou de donnée puis fini par simplement supprimer les point. Ainsi on obtient une fonction discontinue mais ce n’est pas dérangeant pour la suite
+
+Notre dernier objectif était l’étude de la potentielle séparation de 2 pics de pollution. En effet, les pics de pollution sont de différentes natures (épisode du Sahara, feu de forêt… ) et nous voulions être capable de séparer un épisode de sable du Sahara des autres pics de pollution. Nous sommes passé aux données horaires pour avoir plus de data et nous avons étudié l’année 2019 en particulier.
+Les épisodes de sable du Sahara se manifestent principalement par une grande augmentation de la concentration des particules PM10 et PM2.5. Nous avons donc essayé de fabriquer une quantité à partir de ces 2 concentrations. On s’est résolu à utiliser la différence au carré des particules de taille comprise entre les PM2.5 et PM10. Nous voulions par la suite étudier quand cette quantité variait brusquement. Il fallait donc à présent créer un seuil, pour savoir à partir de quelle valeur de (PM10-PM2.5)² on avait un pic de pollution. Nous avons donc regardé statistiquement la pollution pour en traçant un histogramme de la répartition des classes. Une fois ce seuil déterminé, nous avons pu remonter une liste de potentiels pics de sable du Sahara. Nous avons analysé les composantes du pic et les particules majoritaires afin de savoir ce qu’il s’était passé. Puis nous avons réalisé une ACP pour voir si il était possible de séparer un pic de pollution d’un autre et ainsi identifier un événement du type sable du Sahara. Enfin, nous avons réalisé une analyse de Fourier (uniquement du fondamental) en considérant l’intervalle [J-1, J+1] avec J le jour où il y a eu le pic de pollution.
 
 Les données sont toutes disponibles en open source et par station de mesures à l’adresse suivante : https://www.atmosud.org/donnees/acces-par-station
 
@@ -43,12 +48,10 @@ Ce git comprends :
 
 3_ACPClass
 
-4_construction_jeu_de_donnee_propre
+4_correlation_entre_stations
 
-5_correlation_entre_stations
+5_construction_jeu_de_donnee_propre
 
-6_visualisation_evenements_particuliers
-
-7_identification_evenements_particuliers
+6_identification_evenements_particuliers
 
 Une description de chaque code et de son utlité est présente en début de chaque fichier .py.
