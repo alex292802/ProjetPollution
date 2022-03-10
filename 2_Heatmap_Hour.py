@@ -3,6 +3,7 @@
 Created on Thu Mar  3 20:09:37 2022
 
 Script: Heatmap des pollutions au niveau horraire. 
+On génère des heat maps pour visualiser la présence des différentes particules entre 2017 et 2021 à Marseille Longchamps
 
 @author: Benjamin
 """
@@ -14,11 +15,9 @@ import matplotlib.pyplot as plt
 
 #Chargement des données 
 
-
-STATION_1=pd.read_csv(r'C:/Users/Benjamin/Desktop/Fichiers csv/Longchamp.csv')
-STATION_2=pd.read_csv(r'C:/Users/Benjamin/Desktop/Fichiers csv/Aix.csv')
-STATION_3=pd.read_csv(r'C:/Users/Benjamin/Desktop/Fichiers csv/Saint_Louis.csv')
-
+STATION_1=pd.read_pickle('MARSEILLE_LONGCHMAP_HEURE_COMPLET.dataframe')
+STATION_2=pd.read_pickle("AIX_ART_HEURES.dataframe")
+STATION_3=pd.read_pickle('SAINT_LOUIS_HEURE.dataframe')
 
 #Nettoyage des données 
 

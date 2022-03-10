@@ -2,7 +2,17 @@
 """
 Created on Tue Mar  1 14:57:51 2022
 
-@author: Benjamin
+@author: Alexandre
+
+Script : Ce programme a pour objectif d’étudier la potentielle séparation de 
+2 pics de pollution. En effet, les pics de pollution sont de différentes natures 
+(épisode du Sahara, feu de forêt… ). Nous avons analysé les composantes du pic 
+et les particules majoritaires afin de savoir ce qu’il s’était passé. Puis nous 
+avons réalisé une ACP pour voir si il était possible de séparer un pic de 
+pollution d’un autre et ainsi identifier un événement du type sable du Sahara.
+Enfin, nous avons réalisé une analyse de Fourier (uniquement du fondamental) 
+en considérant l’intervalle [J-1, J+1] avec J le jour où il y a eu le pic de 
+pollution.
 """
 import seaborn as sns
 import pandas as pd
@@ -29,12 +39,13 @@ def pareto(data) :
     ax2.tick_params(axis="y", colors="C1")
     plt.ylim(0,110)
     plt.show()
-
+    
+##Travail de pérparation de la donnée
 STATION_1=pd.read_pickle('MARSEILLE_LONGCHMAP_HEURE_COMPLET.dataframe')
 STATION_2=pd.read_pickle("AIX_ART_HEURES.dataframe")
 STATION_3=pd.read_pickle('SAINT_LOUIS_HEURE.dataframe')
 
-Big_data=pd.merge(STATION_1,STATION_2,on=['Heure'])#on a fait la jointure de deux dataframes qui ont une même colonne commune ici 'heure', attention, si les données heures ne sont pas communes, les données ne sont pas réecopiées
+Big_data=pd.merge(STATION_1,STATION_2,on=['Heure'])
 Big_data=pd.merge(Big_data,STATION_3,on=['Heure'])
 print(Big_data.columns)
 
@@ -69,13 +80,16 @@ df["Diff carrés"]=(df['Particules PM10 corr']-df['Particules PM2,5 corr'])**2
 filtered_df= df[ (df['Diff carrés'] >= 1500)] 
 filtered_df.info()
 
+#Histogramme illustrant la répartition de ([PM10]-[PM2.5])^2 sur l'année 2019
 fig, ax = plt.subplots()
 fig=sns.histplot(df['Diff carrés'])
 ax.set_xlim(1,2000)
 fig.figure.suptitle("Répartition de ([PM10]-[PM2.5])^2 sur l'année 2019", fontsize = 12)
 
-#On va créer une liste contenant les jours où on a eu un pic pour les labels de l'ACP
-#On crée aussi une liste contenant le jour d'avant et après  chaque jour où il y a eu un pic pour le filtrage
+#On va créer une liste contenant les jours où on a eu un pic pour les
+# labels de l'ACP
+#On crée aussi une liste contenant le jour d'avant et après  chaque jour où 
+#il y a eu un pic pour le filtrage
 filtered_df_heures=filtered_df["Heure"]
 jours_pic=[] #jours pics
 jours_filtrage=[] #1 jour après le pics et 1 jour vant
@@ -102,8 +116,9 @@ for i in jours_filtrage:
     if i not in jours_filtrage_wd: 
         jours_filtrage_wd.append(i)
 
-#On récupére l'index des heures où il y a eu un pic de pollution et on les regroupe par jour
-index_pics=[] # cette liste regroupe les heures où il y a eu des pics de pollution par jour
+#On récupére l'index des heures où il y a eu un pic de pollution et 
+#on les regroupe par jour
+index_pics=[] # cette liste regroupe les heures avec un pic de pollution par jour
 filtered_df_heures=filtered_df_heures.reset_index()
 for i in range (len(jours_filtrage_wd)):
     mask = (filtered_df_heures['Heure'] >= jours_filtrage_wd[i][0]) & (filtered_df_heures['Heure'] <= jours_filtrage_wd[i][1])
@@ -155,6 +170,7 @@ plt.title("ACP sur les différents pics de pollution")
 ax.legend()
 plt.show()
 
+#Analyse de Fourier
 fourier=[]
 fondamental_f=[]
 for i in range (len(jours_filtrage_wd)):

@@ -4,7 +4,7 @@ Created on Fri Feb  4 10:57:02 2022
 
 Script: Ce programme permet la réalisation ainsi que  la visualisation de l'ACP.
         Il permet également de faire de la classification à partir des nouvelles 
-        coordonnées engendrées oar l'ACP'
+        coordonnées engendrées par l'ACP'
 
 @author: Benjamin
 """
@@ -41,9 +41,8 @@ def pareto(data) :
 ################################## ACP ########################################
 
 #Chargement des données
-#df=pd.read_csv(r'C:/Users/Benjamin/Desktop/Fichiers csv/Marseille_long_Champ_JOURNALIER_nor.csv')
-df=pd.read_csv(r'C:/Users/Benjamin/Desktop/Fichiers csv/Marseille_long_Champ_JOURNALIER_nor.csv')
 
+df=pd.read_pickle('Marseille_long_Champ_JOURNALIER.dataframe')
 
 #Transformation des dates en datetimes
 df['Heure'] = pd.to_datetime(df['Heure'])
@@ -68,7 +67,7 @@ df = df.reset_index()
 df.info()
 
 #Filtre colonnes
-df=df.drop(["index","Heure",
+df=df.drop(["Heure",
         'Méthane',"Dioxyde de soufre (SO2)", "Black Carbon (dans les PM2.5)", "Dioxyde de carbone","Oxydes d'azote (NOX)", "Monoxyde d'azote (NO)",
        'Nombre de particules',
        "Dioxyde d'azote (NO2)"], axis=1)

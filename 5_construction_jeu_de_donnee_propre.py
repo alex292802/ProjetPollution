@@ -3,6 +3,14 @@
 Created on Fri Feb  4 13:15:52 2022
 
 @author: aberg
+
+Script: Ce programme permet de récupérer l'ensemble des données, les fusionner
+en un dataset complet, d'abandonner les caractéristiques qui ne nous intéressent 
+pas et d'enlever les nan. Il est ensuite possible de compléter les données 
+en traçant la droite reliant les 2 points de chaque coté du trou de données puis 
+d'afficher certaines caractéristiques de ce nouveau dataset obtenu (concentration
+en PM1, PM10, PM25...)
+        
 """
 import numpy as np
 import pandas as pd
@@ -34,7 +42,8 @@ X = Big_data.drop(['Black Carbon (combustion de biomasse)',
 "Oxydes d'azote (NOX)", "Ozone (O3)_y", 'Particules PM1_y',
 'Particules PM10', 'Particules PM2,5'], axis=1)
 
-#Fonction permettant de calculer l'index d'une date passée en paramètre par rapport au 1er janvier 2017 (date du début des mesures)
+#Fonction permettant de calculer l'index d'une date passée en paramètre par 
+#rapport au 1er janvier 2017 (date du début des mesures)
 def index_dates(jour_deb,mois_deb,annee_deb,jour_fin,mois_fin,annee_fin):
     d0 = date(2017, 1, 1)
     deb1 = date(annee_deb, mois_deb, jour_deb)
@@ -43,7 +52,8 @@ def index_dates(jour_deb,mois_deb,annee_deb,jour_fin,mois_fin,annee_fin):
     index_fin = (fin1-d0).days  # nombre de jour à partir du 1 Janvier 2017
     return (index_deb,index_fin)
 
-#Fonction permettant de compléter les données en traçant la droite reliant les 2 points de chaque coté du trou de données
+#Fonction permettant de compléter les données en traçant la droite reliant 
+#les 2 points de chaque coté du trou de données
 def donnees_completes(X):
     for labels in X.columns:
         if labels!="Heure":
@@ -95,7 +105,7 @@ for labels in X.columns:
         compteurs.append(compteur)
 print (compteurs)
 
-#donnees_completes(X)
+donnees_completes(X)
 affichage(X,deb,fin,'PM1 (méthode du min)')
 
 

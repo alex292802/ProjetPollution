@@ -3,6 +3,9 @@
 Created on Tue Feb 22 12:18:45 2022
 
 @author: aberg
+
+Script : Ce programme permet de calculer le coefficient de pearson entre 2 
+stations en faisant la moyenne des coefficients de Pearson pour chaque features
 """
 import numpy as np
 import pandas as pd
@@ -31,7 +34,8 @@ PM10_3=Big_data["Particules PM10"]
 PM1_1=Big_data["Particules PM1_x"]
 PM1_3=Big_data["Particules PM1_y"]
 
-#Pour chaque couple de station, on crée une liste contenant les features qui nous intéressent
+#Pour chaque couple de station, on crée une liste contenant les features 
+#qui nous intéressent
 #Station 1 et 2
 L1=[PM25_1.copy(),PM25_2.copy(),PM10_1.copy(),PM10_2.copy()]
 #Station 2 et 3
@@ -39,7 +43,8 @@ L2=[PM25_2.copy(),PM25_3.copy(),PM10_2.copy(),PM10_3.copy()]
 #Station 1 et 3
 L3=[PM25_1.copy(),PM25_3.copy(),PM10_1.copy(),PM10_3.copy(),PM1_1.copy(),PM1_3.copy()]
 
-#Cette fonction calcule le coefficient de pearson entre 2 listes tout en supprimant les nan si ils existent
+#Cette fonction calcule le coefficient de pearson entre 2 listes tout en 
+#supprimant les nan si ils existent
 def coefficient_pearson(L):
     index_nan=[]
     for i in range(len(L)):

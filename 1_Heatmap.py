@@ -5,15 +5,16 @@
 Auteur: Benjamin Schmitt
 
 Script: HeatMap d'une visualisation calendaire' Utilisation de données journalières.
+On génère des heat maps pour visualiser la présence des différentes particules 
+entre 2017 et 2021 à Marseille Longchamps
 
-Ceci est un script temporaire.
 """
 
 import calplot#Librairie à installler avec pip
 import pandas as pd
 
 #Chargement des données
-df=pd.read_csv(r'C:/Users/Benjamin/Desktop/Fichiers csv/Marseille_long_Champ_JOURNALIER_nor.csv')
+df=pd.read_pickle('Marseille_long_Champ_JOURNALIER.dataframe')
 
 #Transformation des dates en datetimes
 df['Heure'] = pd.to_datetime(df['Heure'])
